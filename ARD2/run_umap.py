@@ -98,7 +98,7 @@ def run_projection_umap():
     data = []
     cmpt = 0
     for c in mapper.embedding_:
-        data.append({"X":c[0], "Y":c[1], "LABEL":y[cmpt]})
+        data.append({"X":c[0], "Y":c[1], "LABEL":f"Cluster {y[cmpt]}"})
         cmpt+=1
     df = pd.DataFrame(data)
     df.to_csv("data/umap/precisesads.csv")
