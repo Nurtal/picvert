@@ -161,20 +161,77 @@ def create_normalize_data():
 def create_normalize_data2():
     """ """
 
-    df = pd.read_csv("data/precisesads/lda_input.csv")
+    df = pd.read_csv("data/precisesads/lda_input_reduced.csv")
     df = df.drop(columns=['ID'])
     num_cols = df.select_dtypes(include="number").columns
     df[num_cols] = (df[num_cols] - df[num_cols].min()) / (df[num_cols].max() - df[num_cols].min()) * 100
     df['ID'] = 'not used'
     df.to_csv("data/precisesads/input_normalized2_lda.csv", index=False)
 
-    df = pd.read_csv("data/data_vst_lda.csv")
-    df = df.rename(columns={"Unnamed: 0":"ID"})
+    df = pd.read_csv("data/data_vst_lda_reduced.csv")
+    if 'Unnamed: 0' in list(df.keys()):
+        df = df.rename(columns={"Unnamed: 0":"ID"})
+    df['ID'] = 'not used'
     num_cols = df.select_dtypes(include="number").columns
     df[num_cols] = (df[num_cols] - df[num_cols].min()) / (df[num_cols].max() - df[num_cols].min()) * 100
     df['ID'] = 'not used'
     df.to_csv("data/data_normalized2_lda.csv", index=False)
 
+
+
+def extract_properties():
+    """Extract data properties before normalisation """
+
+    # deal with precisesads
+    df = pd.read_csv("data/precisesads/lda_input.csv")
+    data = []
+    for v in list(df.keys()):
+        if v not in ["ID","LABEL"]:
+            vector = df[v]
+            data.append({
+                        "SYMBOL":v,
+                        "MIN":vector.min(),
+                        "MAX":vector.max(),
+                        "MEAN":vector.mean(),
+                        "RANGE":vector.max() - vector.min(),
+                        "STD":vector.std()
+                        })
+    dfa = pd.DataFrame(data)
+    dfa.to_csv("data/precisesads/data_precisesads_properties.csv", index=False)
+
+    # deal with new
+    df = pd.read_csv("data/data_vst_lda.csv")
+    data = []
+    for v in list(df.keys()):
+        if v not in ["ID","LABEL", "Unnamed: 0"]:
+            vector = df[v]
+            data.append({
+                        "SYMBOL":v,
+                        "MIN":vector.min(),
+                        "MAX":vector.max(),
+                        "MEAN":vector.mean(),
+                        "RANGE":vector.max() - vector.min(),
+                        "STD":vector.std()
+                        })
+    dfb = pd.DataFrame(data)
+    dfb.to_csv("data/data_new_properties.csv", index=False)
+
+
+def craft_reduce_dataset():
+    """ """
+
+    gene_to_drop = list(pd.read_csv("data/gene_to_drop.csv")['SYMBOL'])
+    dfp = pd.read_csv("data/precisesads/lda_input.csv")
+    dfp = dfp.drop(columns=gene_to_drop)
+    dfp.to_csv("data/precisesads/lda_input_reduced.csv", index=False)
+    
+    dfn = pd.read_csv("data/data_vst_lda.csv")
+    dfn = dfn.drop(columns=gene_to_drop)
+    dfn.to_csv("data/data_vst_lda_reduced.csv", index=False)
+
+
+
+    
 if __name__ == "__main__":
 
 
@@ -184,3 +241,6 @@ if __name__ == "__main__":
     # craft_new_lda_data()
     # create_normalize_data()
     create_normalize_data2()
+    # extract_properties()
+
+    # craft_reduce_dataset()

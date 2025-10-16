@@ -9,13 +9,14 @@ def run_lda_normalize():
     """ """
 
     # load model
-    lda = joblib.load("model/lda_normalized2.joblib")
+    lda = joblib.load("model/lda_auto.joblib")
 
     # load new data
     df = pd.read_csv("data/data_normalized2_lda.csv")
     df['LABEL'] = "machin"
     df['ID'] = "truc"
     df = df.drop(columns=['ID', 'LABEL'])
+    print(df)
     X = df
     X1_proj = lda.transform(X)
 
