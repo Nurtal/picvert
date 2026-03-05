@@ -67,7 +67,6 @@ def run_projection_umap():
     target = list(df_labeled['LABEL'])
     classes = ['cluster1', 'cluster2', 'cluster3']
 
-
     # process data
     X = df_labeled.drop('LABEL', axis=1)
     X = X.dropna()

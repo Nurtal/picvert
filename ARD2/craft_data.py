@@ -230,6 +230,42 @@ def craft_reduce_dataset():
     dfn.to_csv("data/data_vst_lda_reduced.csv", index=False)
 
 
+def craft_inception_dataset():
+    """ """
+
+
+    # load data from PHASE I & II
+
+    df = pd.read_csv('/home/drfox/data/precisesads/inception_clinical.csv')
+    omic_list_1 = list(df["\\Inception\\Low Dimensional Data\\Clinical\\Sampling\\OMIC number\\M000\\"])
+    omic_list_2 = list(df["\\Inception\\Low Dimensional Data\\Clinical\\Sampling\\OMIC number\\M006\\"])
+    omic_list_3 = list(df["\\Inception\\Low Dimensional Data\\Clinical\\Sampling\\OMIC number\\M014\\"])
+
+
+    # list OMICID od PHASE I & II
+    omic_list_clean = []
+    for omic in omic_list_1:
+        if str(omic) != "nan":
+            omic = omic.replace('N', '')
+            if omic not in omic_list_clean:
+                omic_list_clean.append(int(omic))
+    for omic in omic_list_2:
+        if str(omic) != "nan":
+            omic = omic.replace('N', '')
+            if omic not in omic_list_clean:
+                omic_list_clean.append(int(omic))
+    for omic in omic_list_3:
+        if str(omic) != "nan":
+            omic = omic.replace('N', '')
+            if omic not in omic_list_clean:
+                omic_list_clean.append(int(omic))
+
+
+    # load lda data
+    df = pd.read_csv('data/precisesads/lda_input.csv')
+    df = df[df['ID'].isin(omic_list_clean)]
+
+    print(df)
 
     
 if __name__ == "__main__":
@@ -240,7 +276,8 @@ if __name__ == "__main__":
     # create_vst_new_file()
     # craft_new_lda_data()
     # create_normalize_data()
-    create_normalize_data2()
+    # create_normalize_data2()
     # extract_properties()
 
     # craft_reduce_dataset()
+    craft_inception_dataset()
